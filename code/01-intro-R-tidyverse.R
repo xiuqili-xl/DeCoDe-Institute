@@ -70,9 +70,10 @@ write_csv(group_assignment, here("outputs_csv", "group_assignment.csv"))
 # Explore terminal weight in PHENO ----
 pheno_terminal_weight <- PHENO %>%
   select(pid, sex, group, starts_with("terminal.weight")) %>%
-  distinct()
+  distinct() %>%
+  arrange(sex, group, pid)
 
-write_csv(pheno_terminal_weight, here("outputs_csv", "pheno_terminal_weight.csv"))
+write_csv(pheno_terminal_weight, here("outputs_csv", "pheno_weights_terminal.csv"))
 
 pheno_terminal_weight %>%
   group_by(sex, group) %>%
@@ -103,11 +104,12 @@ ggsave(path = here("graphs"), filename = "pheno_bw_terminal.png",
 
 # Weight change (Figure 5 of Schneck) -----
 pheno_bw_key_timepoints <- PHENO %>%
-  select(pid, group, sex, 
+  select(pid, sex, group, 
          registration.d_arrive, registration.weight, 
          familiarization.d_visit, familiarization.weight, 
          key.d_sacrifice, terminal.weight.bw) %>% 
-  distinct()
+  distinct() %>%
+  arrange(sex, group, pid)
 
 write_csv(pheno_bw_key_timepoints, here("outputs_csv", "pheno_bw_key_timepoints.csv"))
 
@@ -142,7 +144,7 @@ ggplot(data = pheno_bw_change) +
        subtitle = "(`familiarization.weight` vs `terminal.weight.bw`)", 
        x = "", y = "body weight(g)") 
 
-ggsave(path = here("graphs"), filename = "pheno_bw_familiarization_vs_change.png",
+ggsave(path = here("graphs"), filename = "pheno_bw_familiarization_vs_terminal.png",
        width = 4, height = 6, dpi = 300, units = "in")
 
 
@@ -178,7 +180,7 @@ nrow(sample_plasma %>% distinct())
 
 # VO2 max -----
 pheno_vo2 <- PHENO %>% 
-  select(pid, group, sex, 
+  select(pid, sex, group, 
          visit1_date = vo2.max.test.d_vo2_1, visit2_date = vo2.max.test.d_vo2_2,
          visit1_blactate_begin = vo2.max.test.blactate_begin_1, visit2_blactate_begin = vo2.max.test.blactate_begin_2,
          visit1_vo2_max = vo2.max.test.vo2_max_1, visit2_vo2_max = vo2.max.test.vo2_max_2,
@@ -187,7 +189,8 @@ pheno_vo2 <- PHENO %>%
          visit1_speed_max = vo2.max.test.speed_max_1, visit2_speed_max = vo2.max.test.speed_max_2,
          visit1_blactate_end = vo2.max.test.blactate_end_1, visit2_blactate_end = vo2.max.test.blactate_end_2,
          visit1_comments = vo2.max.test.vo2_comments_1, visit2_comments = vo2.max.test.vo2_comments_2) %>%
-  distinct()
+  distinct() %>%
+  arrange(sex, group, pid)
 
 nrow(pheno_vo2)
 
