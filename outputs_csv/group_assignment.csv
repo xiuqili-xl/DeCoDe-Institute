@@ -1,0 +1,148 @@
+pid,key.d_arrive,key.d_sacrifice,key.intervention,group,sex,sample_count
+10700102,14NOV2018,25FEB2019,training (phase 1b),1w,female,113
+10760008,14NOV2018,26FEB2019,training (phase 1b),1w,female,1
+10770666,14NOV2018,27FEB2019,training (phase 1b),1w,female,1
+10780629,14NOV2018,27FEB2019,training (phase 1b),1w,female,1
+10784616,14NOV2018,27FEB2019,training (phase 1b),1w,female,1
+10833331,14NOV2018,27FEB2019,training (phase 1b),1w,female,111
+10886028,14NOV2018,27FEB2019,training (phase 1b),1w,female,1
+10901000,14NOV2018,25FEB2019,training (phase 1b),1w,female,1
+10901434,14NOV2018,25FEB2019,training (phase 1b),1w,female,126
+10914331,14NOV2018,25FEB2019,training (phase 1b),1w,female,1
+10934529,14NOV2018,25FEB2019,training (phase 1b),1w,female,10
+10950486,14NOV2018,26FEB2019,training (phase 1b),1w,female,125
+10950648,14NOV2018,26FEB2019,training (phase 1b),1w,female,1
+10953744,14NOV2018,26FEB2019,training (phase 1b),1w,female,126
+10962735,14NOV2018,26FEB2019,training (phase 1b),1w,female,1
+10680837,14NOV2018,04MAR2019,training (phase 1b),2w,female,9
+10702741,14NOV2018,04MAR2019,training (phase 1b),2w,female,1
+10729518,14NOV2018,04MAR2019,training (phase 1b),2w,female,126
+10732306,14NOV2018,04MAR2019,training (phase 1b),2w,female,1
+10734945,14NOV2018,04MAR2019,training (phase 1b),2w,female,114
+10742611,14NOV2018,05MAR2019,training (phase 1b),2w,female,1
+10756086,14NOV2018,05MAR2019,training (phase 1b),2w,female,1
+10761160,14NOV2018,05MAR2019,training (phase 1b),2w,female,114
+10782168,14NOV2018,06MAR2019,training (phase 1b),2w,female,1
+10830073,14NOV2018,06MAR2019,training (phase 1b),2w,female,1
+10858679,14NOV2018,06MAR2019,training (phase 1b),2w,female,1
+10871349,14NOV2018,06MAR2019,training (phase 1b),2w,female,127
+10877894,14NOV2018,06MAR2019,training (phase 1b),2w,female,1
+10971645,14NOV2018,05MAR2019,training (phase 1b),2w,female,127
+10972374,14NOV2018,05MAR2019,training (phase 1b),2w,female,1
+10268871,04SEP2018,03DEC2018,training (phase 1b),4w,female,1
+10282947,04SEP2018,03DEC2018,training (phase 1b),4w,female,1
+10284052,04SEP2018,03DEC2018,training (phase 1b),4w,female,1
+10300007,04SEP2018,03DEC2018,training (phase 1b),4w,female,1
+10306471,04SEP2018,04DEC2018,training (phase 1b),4w,female,117
+10309659,04SEP2018,04DEC2018,training (phase 1b),4w,female,1
+10314733,04SEP2018,04DEC2018,training (phase 1b),4w,female,13
+10315624,04SEP2018,04DEC2018,training (phase 1b),4w,female,3
+10335064,04SEP2018,04DEC2018,training (phase 1b),4w,female,122
+10335730,04SEP2018,05DEC2018,training (phase 1b),4w,female,1
+10337199,04SEP2018,05DEC2018,training (phase 1b),4w,female,111
+10338918,04SEP2018,05DEC2018,training (phase 1b),4w,female,1
+10356738,04SEP2018,05DEC2018,training (phase 1b),4w,female,1
+10381414,04SEP2018,06DEC2018,training (phase 1b),4w,female,110
+10387021,04SEP2018,06DEC2018,training (phase 1b),4w,female,1
+10391800,04SEP2018,06DEC2018,training (phase 1b),4w,female,1
+10398651,04SEP2018,06DEC2018,training (phase 1b),4w,female,1
+10411690,04SEP2018,06DEC2018,training (phase 1b),4w,female,123
+10043608,02JUL2018,01OCT2018,training (phase 1b),8w,female,1
+10044256,02JUL2018,01OCT2018,training (phase 1b),8w,female,112
+10044760,02JUL2018,02OCT2018,training (phase 1b),8w,female,110
+10044841,02JUL2018,02OCT2018,training (phase 1b),8w,female,13
+10045228,02JUL2018,03OCT2018,training (phase 1b),8w,female,119
+10045309,02JUL2018,03OCT2018,training (phase 1b),8w,female,119
+10045651,02JUL2018,03OCT2018,training (phase 1b),8w,female,1
+10045732,02JUL2018,03OCT2018,training (phase 1b),8w,female,1
+10046461,02JUL2018,04OCT2018,training (phase 1b),8w,female,123
+10046542,02JUL2018,04OCT2018,training (phase 1b),8w,female,3
+10046623,02JUL2018,04OCT2018,training (phase 1b),8w,female,1
+10046704,02JUL2018,05OCT2018,training (phase 1b),8w,female,2
+10046895,02JUL2018,05OCT2018,training (phase 1b),8w,female,1
+10046976,02JUL2018,05OCT2018,training (phase 1b),8w,female,1
+10043527,02JUL2018,01OCT2018,control,control,female,119
+10043799,02JUL2018,05OCT2018,control,control,female,1
+10043950,02JUL2018,05OCT2018,control,control,female,109
+10044094,02JUL2018,01OCT2018,control,control,female,1
+10044337,02JUL2018,01OCT2018,control,control,female,123
+10044418,02JUL2018,02OCT2018,control,control,female,1
+10044922,02JUL2018,02OCT2018,control,control,female,12
+10045570,02JUL2018,03OCT2018,control,control,female,1
+10045813,02JUL2018,03OCT2018,control,control,female,1
+10046038,02JUL2018,04OCT2018,control,control,female,1
+10046119,02JUL2018,04OCT2018,control,control,female,114
+10046380,02JUL2018,04OCT2018,control,control,female,126
+10417702,09OCT2018,21JAN2019,training (phase 1b),1w,male,111
+10422463,09OCT2018,21JAN2019,training (phase 1b),1w,male,111
+10424911,09OCT2018,21JAN2019,training (phase 1b),1w,male,128
+10471596,09OCT2018,21JAN2019,training (phase 1b),1w,male,1
+10478337,09OCT2018,21JAN2019,training (phase 1b),1w,male,1
+10503110,09OCT2018,22JAN2019,training (phase 1b),1w,male,127
+10536558,09OCT2018,22JAN2019,training (phase 1b),1w,male,1
+10543767,09OCT2018,22JAN2019,training (phase 1b),1w,male,1
+10553053,09OCT2018,22JAN2019,training (phase 1b),1w,male,1
+10561072,09OCT2018,22JAN2019,training (phase 1b),1w,male,126
+10616233,09OCT2018,23JAN2019,training (phase 1b),1w,male,1
+10619259,09OCT2018,23JAN2019,training (phase 1b),1w,male,9
+10621903,09OCT2018,23JAN2019,training (phase 1b),1w,male,1
+10675086,09OCT2018,23JAN2019,training (phase 1b),1w,male,1
+10677887,09OCT2018,23JAN2019,training (phase 1b),1w,male,2
+10434046,09OCT2018,28JAN2019,training (phase 1b),2w,male,1
+10436170,09OCT2018,28JAN2019,training (phase 1b),2w,male,1
+10472053,09OCT2018,28JAN2019,training (phase 1b),2w,male,1
+10486003,09OCT2018,28JAN2019,training (phase 1b),2w,male,126
+10496580,09OCT2018,28JAN2019,training (phase 1b),2w,male,1
+10502300,09OCT2018,29JAN2019,training (phase 1b),2w,male,128
+10531599,09OCT2018,29JAN2019,training (phase 1b),2w,male,1
+10564179,09OCT2018,29JAN2019,training (phase 1b),2w,male,1
+10587543,09OCT2018,29JAN2019,training (phase 1b),2w,male,111
+10589325,09OCT2018,29JAN2019,training (phase 1b),2w,male,9
+10591575,09OCT2018,30JAN2019,training (phase 1b),2w,male,1
+10611193,09OCT2018,30JAN2019,training (phase 1b),2w,male,1
+10637079,09OCT2018,30JAN2019,training (phase 1b),2w,male,1
+10641858,09OCT2018,30JAN2019,training (phase 1b),2w,male,127
+10672656,09OCT2018,30JAN2019,training (phase 1b),2w,male,111
+10059369,07AUG2018,12NOV2018,training (phase 1b),4w,male,2
+10063633,07AUG2018,12NOV2018,training (phase 1b),4w,male,1
+10085017,07AUG2018,12NOV2018,training (phase 1b),4w,male,1
+10088113,07AUG2018,12NOV2018,training (phase 1b),4w,male,1
+10093702,07AUG2018,12NOV2018,training (phase 1b),4w,male,1
+10095241,07AUG2018,13NOV2018,training (phase 1b),4w,male,127
+10106383,07AUG2018,13NOV2018,training (phase 1b),4w,male,112
+10136967,07AUG2018,13NOV2018,training (phase 1b),4w,male,1
+10139044,07AUG2018,13NOV2018,training (phase 1b),4w,male,127
+10139710,07AUG2018,13NOV2018,training (phase 1b),4w,male,1
+10152148,07AUG2018,14NOV2018,training (phase 1b),4w,male,2
+10171010,07AUG2018,14NOV2018,training (phase 1b),4w,male,1
+10175431,07AUG2018,14NOV2018,training (phase 1b),4w,male,1
+10179267,07AUG2018,14NOV2018,training (phase 1b),4w,male,1
+10185585,07AUG2018,15NOV2018,training (phase 1b),4w,male,112
+10204989,07AUG2018,15NOV2018,training (phase 1b),4w,male,12
+10219315,07AUG2018,15NOV2018,training (phase 1b),4w,male,1
+10220917,07AUG2018,15NOV2018,training (phase 1b),4w,male,123
+10024735,05JUN2018,03SEP2018,training (phase 1b),8w,male,122
+10025626,05JUN2018,04SEP2018,training (phase 1b),8w,male,121
+10025707,05JUN2018,04SEP2018,training (phase 1b),8w,male,106
+10025898,05JUN2018,04SEP2018,training (phase 1b),8w,male,1
+10025979,05JUN2018,05SEP2018,training (phase 1b),8w,male,124
+10026193,05JUN2018,05SEP2018,training (phase 1b),8w,male,106
+10026436,05JUN2018,05SEP2018,training (phase 1b),8w,male,1
+10026940,05JUN2018,06SEP2018,training (phase 1b),8w,male,1
+10027084,05JUN2018,06SEP2018,training (phase 1b),8w,male,1
+10027165,05JUN2018,06SEP2018,training (phase 1b),8w,male,11
+10027246,05JUN2018,06SEP2018,training (phase 1b),8w,male,1
+10027408,05JUN2018,07SEP2018,training (phase 1b),8w,male,3
+10027912,05JUN2018,07SEP2018,training (phase 1b),8w,male,2
+10023259,05JUN2018,03SEP2018,control,control,male,124
+10024816,05JUN2018,03SEP2018,control,control,male,1
+10025464,05JUN2018,04SEP2018,control,control,male,2
+10025545,05JUN2018,04SEP2018,control,control,male,1
+10026002,05JUN2018,05SEP2018,control,control,male,1
+10026274,05JUN2018,05SEP2018,control,control,male,2
+10026355,05JUN2018,05SEP2018,control,control,male,125
+10026517,05JUN2018,06SEP2018,control,control,male,10
+10026789,05JUN2018,06SEP2018,control,control,male,125
+10027327,05JUN2018,07SEP2018,control,control,male,112
+10027599,05JUN2018,07SEP2018,control,control,male,110
+10027831,05JUN2018,07SEP2018,control,control,male,1
