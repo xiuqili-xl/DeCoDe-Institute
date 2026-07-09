@@ -63,7 +63,7 @@ group_assignment <- PHENO %>%
   mutate(group = factor(group, levels = c("1w", "2w", "4w", "8w", "control"))) %>%
   arrange(sex, group, pid)
 
-write_csv(group_assignment, here("outputs_csv", "group_assignment.csv"))
+write_csv(group_assignment, here("outputs_csv", "exp_group_assignment.csv"))
 
 
 
