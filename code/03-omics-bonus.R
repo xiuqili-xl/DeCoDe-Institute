@@ -131,7 +131,7 @@ autoplot(watsc_exp_pca, data = watsc_exp, x = 2, y = 3, color="group", shape="se
 # Question: why do the feature_id & gene inner_join + filtering when we could do the PCA on feature ID?
 
 
-## PCA of male rats 8wk vs control
+## PCA of male rats 8wk vs control ----
 watsc_exp_subset <- watsc_exp %>%
   filter(group %in% c("8w", "control"))
 
