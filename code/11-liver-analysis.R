@@ -10,6 +10,9 @@ library(here)
 
 
 # Import data ----
+## Import data ----
+rm(list = ls())
+
 ## Previously saved animal and sample data 
 exp_group_assignment <- read_csv(here("data_processed", "exp_group_assignment_copy.csv"),
                                  col_types = c(rep("c", 6), "n"))
@@ -32,9 +35,6 @@ glimpse(geo_rna_metadata)
 
 
 # TRNSCRPT_LIVER ----
-## Import data ----
-rm(list = ls())
-
 ## to look at all available objects
 data(package = "MotrpacRatTraining6moData")
 ## TRNSCRPT_LIVER_DA                Differential analysis of RNA-seq datasets
@@ -74,7 +74,7 @@ sra_rna_metadata_for_analysis <- sra_rna_metadata %>%
 write_csv(sra_rna_metadata_for_analysis, here("outputs_csv", "SRARunSelector_metadata_for_analysis.csv"))
 
 ## pick vial 3 for female, control vs 8 wk --- analysis in Galaxy
-## SRR25251380 (female, control, ) and SRR25251378 (female, 8 wk)
+## SRR25251380 (female, control, 90252016803) and SRR25251378 (female, 8 wk, 90258016803)
 sra_rna_metadata_for_analysis %>%
   filter(Run %in% c("SRR25251380", "SRR25251378")) %>%
   view()
