@@ -81,17 +81,18 @@ dds <- DESeqDataSetFromMatrix(countData = count_data,
                               design = ~ DevStage)
 dds
 
-
 ## We can pre-filter to remove rows in which there are very few reads, thus reducing the required 
 ## memory, and increasing the speed. Prefiltering can also improve visualizations, as features 
 ## with no information for differential expression are not plotted.
 ## dds <- dds[rowSums(counts(dds)) > 10, ]
 
-## However, the default in Galaxy does not perform pre-filtering, so we won't do it here
+## However, the default in Galaxy does not perform pre-filtering
+## So we'll first proceed without filtering
 
 
 
-# Get normalized counts ----
+# Replicating the Galaxy analysis ----
+## Get normalized counts ----
 dds <- estimateSizeFactors(dds)
 normalized_counts <- counts(dds, normalized = TRUE)
 
@@ -101,32 +102,31 @@ normalized_counts["Tfrc", ]
 ## can write to file for downstream analysis
 
 
-
-# Differential Expression Analysis ----
+## Differential Expression Analysis ----
 dds <- DESeq(dds)
 res <- results(dds, contrast = c("DevStage", "Adult", "Embryonic"))
 
 res
 summary(res)           
-# note, the results function default to adjusted p-value < 0.1
-# we could specify cutoff using results(dds, alpha = 0.05)
+## note, the results function default to adjusted p-value < 0.1
+## we could specify cutoff using results(dds, alpha = 0.05)
 
 res_df <- as.data.frame(res)
 res_df["Tfrc", ]
-# spot check matches galaxy output!
+## spot check matches galaxy output!
 
 
 
-# MA-plot ----
+## MA-plot ----
 plotMA(res)
 plotMA(res, ylim = c(-13, 13), size = 1) 
 
 
-# Plot dispersion ----
+## Plot dispersion ----
 plotDispEsts(dds)
 
 
-# PCA ----
+## PCA ----
 vsd <- vst(dds, blind = TRUE)           # Variance-stabilizing transformation
 plotPCA(vsd, intgroup = "DevStage") 
 
@@ -152,7 +152,7 @@ ggsave(path = here("graphs_other"), filename = "MouseDevCortex_PCA.png",
 
 
 
-# Sample-to-Sample Distance ----
+## Sample-to-Sample Distance ----
 ## extact transformed matrics and transpose it
 ## use vst for very large datasets
 sampleDists <- dist(t(assay(rld)))
@@ -162,7 +162,7 @@ sampleDists
 sampleDistMatrix <- as.matrix(sampleDists)
 sampleDistMatrix
 
-# create a sample-to-sample distance heatmap
+## create a sample-to-sample distance heatmap
 pheatmap(sampleDistMatrix,
          clustering_distance_rows = sampleDists,
          clustering_distance_cols = sampleDists,
@@ -176,7 +176,7 @@ ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Sample-Distance-H
 
 
 
-# Volcano Plot ----
+## Volcano Plot ----
 head(res_df, 10)
 
 ggplot(data = res_df, 
@@ -184,14 +184,14 @@ ggplot(data = res_df,
   geom_point(size = 1, shape = 21) +
   theme_bw() +
   labs(title = "Mouse Adult vs Embryonic Cortex | Volcano Plot")
-# wonder if filtering out lowly expressed genes earlier would make a difference?
+## wonder if filtering out lowly expressed genes earlier would make a difference?
 
 ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Volcano-plot.png",
        width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
 
 
 
-# Heatmap ----
+## Heatmap ----
 ## work with log transformed data, so variance is approximately the same across different mean values
 rld_df <- assay(rld) 
 head(rld_df)
@@ -217,6 +217,130 @@ pheatmap(topVarGeneCounts,
 
 ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Heatmap.png",
        width = 5, height = 5, dpi = 300, unit = "in", bg = "white")
+
+
+
+# If we pre-filter the data ----
+## Pre-filtering ----
+dds_filtered <- dds[rowSums(counts(dds)) > 10, ]
+## reduced the # of genes by 1/3
+
+
+## Differential Expression Analysis ----
+dds_filtered <- DESeq(dds_filtered)
+res_filtered <- results(dds_filtered, contrast = c("DevStage", "Adult", "Embryonic"),
+                        alpha = 0.05)          # raise threshold bc so many genes are significant
+
+res_filtered
+summary(res_filtered)           
+## note, the results function default to adjusted p-value < 0.1
+## we could specify cutoff using results(dds, alpha = 0.05)
+
+res_filtered_df <- as.data.frame(res_filtered)
+
+
+## MA-plot ----
+plotMA(res_filtered)
+plotMA(res_filtered, ylim = c(-13, 13), size = 1) 
+
+
+## Plot dispersion ----
+plotDispEsts(dds_filtered)
+
+
+## PCA ----
+rld_filtered <- rlog(dds_filtered, blind = TRUE)          # Regularized log transformation
+plotPCA(rld_filtered, intgroup = "DevStage")
+
+PCA_filtered_data <- plotPCA(rld_filtered, intgroup = "DevStage", returnData = TRUE) 
+PCA_filtered_data
+
+ggplot(data = PCA_filtered_data, 
+       mapping = aes(x = PC1, y = PC2, color = DevStage, fill = DevStage)) +
+  geom_point(shape = 21, size = 3, alpha = 0.7) + 
+  scale_x_continuous(limits = c(-40, 40), expand = 0.01) +
+  scale_y_continuous(limits = c(-40, 40), expand = 0.01) +
+  coord_fixed(ratio = 1) +
+  theme_bw() +
+  labs(title = "Mouse Adult vs Embryonic Cortex | PCA (filtered)",
+       x = "PC1 (98% variance)", y = "PC2 (1% variance)")
+# very sutble change
+
+ggsave(path = here("graphs_other"), filename = "MouseDevCortex_PCA_filtered.png",
+       width = 6, height = 4, dpi = 300, unit = "in")
+
+
+
+## Sample-to-Sample Distance ----
+## extact transformed matrics and transpose it
+## use vst for very large datasets
+sampleDists_filtered <- dist(t(assay(rld_filtered)))
+sampleDists_filtered
+
+## convert to a distance matrix
+sampleDistMatrix_filtered <- as.matrix(sampleDists_filtered)
+sampleDistMatrix_filtered
+
+## create a sample-to-sample distance heatmap
+pheatmap(sampleDistMatrix_filtered,
+         clustering_distance_rows = sampleDists_filtered,
+         clustering_distance_cols = sampleDists_filtered,
+         color = colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Blues")))(30)) %>%
+  as.ggplot() +
+  labs(title = "Mouse Adult vs Embryonic Cortex | Sample Distance Heatmap (filtered)")
+## visually identical to galaxy output
+
+ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Sample-Distance-Heatmap_filtered.png",
+       width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
+
+
+
+## Volcano Plot ----
+head(res_filtered_df, 10)
+
+ggplot(data = res_filtered_df, 
+       mapping = aes(x = log2FoldChange, y = -log(padj, 10))) +
+  geom_point(size = 1, shape = 21) +
+  theme_bw() +
+  labs(title = "Mouse Adult vs Embryonic Cortex | Volcano Plot (filtered)")
+## wonder if filtering out lowly expressed genes earlier would make a difference?
+
+ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Volcano-plot_filtered.png",
+       width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
+
+
+
+## Heatmap ----
+## work with log transformed data, so variance is approximately the same across different mean values
+rld_filtered_df <- assay(rld_filtered) 
+head(rld_filtered_df)
+
+## find the top 100 varying genes
+topVarGenes_filtered <- head(order(rowVars(rld_filtered_df), decreasing = TRUE), 200)
+topVarGeneCounts_filtered <- rld_filtered_df[topVarGenes_filtered, ]
+
+## plot using pheatmap
+pheatmap(topVarGeneCounts_filtered,
+         color=colorRampPalette(c("navy", "white", "red"))(50),
+         scale = "row",                          # scale by gene
+         show_rownames = FALSE,
+         fontsize = 6,
+         #cutree_cols = 2,
+         annotation_col = metadata_df,
+         annotation_colors = list(
+           DevStage = c("Adult" = "#009E73", "Embryonic" = "#CC79A7")
+         )) %>%
+  as.ggplot() +
+  labs(title = "Mouse Adult vs Embryonic Cortex | Heatmap (filtered)",
+       subtitle = "(top 200 varying gene) \n")
+
+ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Heatmap_filtered.png",
+       width = 5, height = 5, dpi = 300, unit = "in", bg = "white")
+
+
+
+
+
 
 
 # Clear environment at the end of the session ----
