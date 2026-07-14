@@ -70,7 +70,7 @@ metadata_df <- data.frame(Sample = colnames(count_data)) %>%
 metadata_df
 
 
-## check the col of count_matrix is in the same order as rows of metadata_df
+## check the col of count_data is in the same order as rows of metadata_df
 colnames(count_data) == rownames(metadata_df)
 
 
