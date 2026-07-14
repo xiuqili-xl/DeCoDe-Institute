@@ -1,10 +1,11 @@
 # Goal -----
-# Replicate DESeq2 analysis that was performed on Galaxy during DeCoDe Institute
+# Replicate DESeq2 analysis that was performed on Galaxy during the DeCoDe Institute
+
 
 # Useful resources ----
-# Full vignette: https://bioconductor.statistik.tu-dortmund.de/packages/3.5/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
 # Tufts quick guide https://rtguides.it.tufts.edu/bio/tutorials/de-seq2-in-r-ood.html
-
+# Schwartz blog https://ashleyschwartz.com/posts/2023/05/deseq2-tutorial
+# Full vignette: https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
 
 # Dataset ----
 # Transcriptome of Embryonic and Adult mouse cerebral cortex
@@ -13,6 +14,7 @@
 
 # Load library ----
 library(tidyverse)
+library(here)
 library(DESeq2)
 library(pheatmap)
 library(ggplotify)
@@ -34,7 +36,7 @@ count_FM5 <- read.delim(file = "https://zenodo.org/records/20531535/files/gene_c
 ## note, all dataset has 32,711 rows
 
 all(count_AM1$Feature == count_FM4$Feature)
-## presumably they all have the same feature
+## presumably, they all have the same feature
 
 
 # Combine into Count Matrix ----
@@ -51,74 +53,73 @@ nrow(count_combined)         # inner_join() confirms that all datasets have the 
 rm(count_AM1, count_AM2, count_AM3, count_FM3, count_FM4, count_FM5)
 
 ## construct count matrix for DESEq2
-count_matrix <- count_combined[ , 2:ncol(count_combined)]
-rownames(count_matrix) <- count_combined$Feature
-count_matrix <- as.matrix(count_matrix)
+count_data <- count_combined %>%
+  column_to_rownames(var = "Feature")
 
-head(count_matrix)
-class(count_matrix)
-## to investigate for the future: do we really need a matrix or is a df fine
+head(count_data)
+class(count_data)
 
 
 # Create metadata df ----
-metadata_df <- data.frame(Sample = colnames(count_matrix)) %>%
+metadata_df <- data.frame(Sample = colnames(count_data)) %>%
   mutate(DevStage = case_when(str_detect(Sample, "AM") ~ "Adult",
                               str_detect(Sample, "FM") ~ "Embryonic"),
-         DevStage = factor(DevStage, levels = c("Adult", "Embryonic")))
-
-rownames(metadata_df) <- metadata_df$Sample
-metadata_df <- metadata_df %>% select(-Sample)
+         DevStage = factor(DevStage, levels = c("Adult", "Embryonic"))) %>%
+  column_to_rownames(var = "Sample")
 
 metadata_df
-glimpse(metadata_df)
 
 
 ## check the col of count_matrix is in the same order as rows of metadata_df
-colnames(count_matrix) == rownames(metadata_df)
+colnames(count_data) == rownames(metadata_df)
 
 
 
 # Construct DESeqDataSet ----
-dds <- DESeqDataSetFromMatrix(countData = count_matrix,
+dds <- DESeqDataSetFromMatrix(countData = count_data,
                               colData = metadata_df,
                               design = ~ DevStage)
 dds
 
-## normally, we should prefilter to remove rows in which there are very few reads, thus
-## reducing the required memory, and increasing the speed.
-## prefiltering can also improve visualizations, as features with no information 
-## for differential expression are not plotted.
+
+## We can pre-filter to remove rows in which there are very few reads, thus reducing the required 
+## memory, and increasing the speed. Prefiltering can also improve visualizations, as features 
+## with no information for differential expression are not plotted.
 ## dds <- dds[rowSums(counts(dds)) > 10, ]
 
-## However, the default in Galaxy does not perform prefiltering, so we won't here
+## However, the default in Galaxy does not perform pre-filtering, so we won't do it here
+
+
+
+# Get normalized counts ----
+dds <- estimateSizeFactors(dds)
+normalized_counts <- counts(dds, normalized = TRUE)
+
+## check against galaxy output - appear to be the same
+normalized_counts["Tfrc", ]
+
+## can write to file for downstream analysis
+
 
 
 # Differential Expression Analysis ----
 dds <- DESeq(dds)
+res <- results(dds, contrast = c("DevStage", "Adult", "Embryonic"))
 
-## Results ----
-d_results <- results(dds, contrast = c("DevStage", "Adult", "Embryonic"))
+res
+summary(res)           
+# note, the results function default to adjusted p-value < 0.1
+# we could specify cutoff using results(dds, alpha = 0.05)
 
-summary(d_results)
-d_results
-
-d_results_df <- as.data.frame(d_results)
-head(d_results_df)
-## spot check matches galaxy output!
-
-
-## Normalized counts ----
-d_counts <- counts(dds, normalized = TRUE)
-
-view(d_counts)
-d_counts["Samd10", ]
-## spot check matches galaxy output!
+res_df <- as.data.frame(res)
+res_df["Tfrc", ]
+# spot check matches galaxy output!
 
 
 
 # MA-plot ----
-plotMA(d_results)
-plotMA(d_results, ylim = c(-13, 13), size = 1) 
+plotMA(res)
+plotMA(res, ylim = c(-13, 13), size = 1) 
 
 
 # Plot dispersion ----
@@ -126,14 +127,14 @@ plotDispEsts(dds)
 
 
 # PCA ----
-d_vsd <- vst(dds, blind = TRUE)           # Variance-stabilizing transformation
-plotPCA(d_vsd, intgroup = "DevStage") 
+vsd <- vst(dds, blind = TRUE)           # Variance-stabilizing transformation
+plotPCA(vsd, intgroup = "DevStage") 
 
-d_rld <- rlog(dds, blind = TRUE)          # Regularized log transformation
-plotPCA(d_rld, intgroup = "DevStage") 
+rld <- rlog(dds, blind = TRUE)          # Regularized log transformation
+plotPCA(rld, intgroup = "DevStage")     # could use `ntop = 200` to specify the # of genes for analysis
 ## these two looks more similar than galaxy output
 
-PCA_data <- plotPCA(d_rld, intgroup = "DevStage", returnData = TRUE) 
+PCA_data <- plotPCA(rld, intgroup = "DevStage", returnData = TRUE) 
 PCA_data
 
 ggplot(data = PCA_data, 
@@ -150,21 +151,21 @@ ggsave(path = here("graphs_other"), filename = "MouseDevCortex_PCA.png",
        width = 6, height = 4, dpi = 300, unit = "in")
 
 
+
 # Sample-to-Sample Distance ----
 ## extact transformed matrics and transpose it
 ## use vst for very large datasets
-d_rld_matrix <- assay(d_rld)
-sampleDist <- dist(t(d_rld_matrix))
-sampleDist
+sampleDists <- dist(t(assay(rld)))
+sampleDists
 
 ## convert to a distance matrix
-sampleDistMatrix <- as.matrix(sampleDist)
+sampleDistMatrix <- as.matrix(sampleDists)
 sampleDistMatrix
 
 # create a sample-to-sample distance heatmap
 pheatmap(sampleDistMatrix,
-         clustering_distance_rows = sampleDist,
-         clustering_distance_cols = sampleDist,
+         clustering_distance_rows = sampleDists,
+         clustering_distance_cols = sampleDists,
          color = colorRampPalette(rev(RColorBrewer::brewer.pal(9, "Blues")))(30)) %>%
   as.ggplot() +
   labs(title = "Mouse Adult vs Embryonic Cortex | Sample Distance Heatmap")
@@ -176,12 +177,46 @@ ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Sample-Distance-H
 
 
 # Volcano Plot ----
+head(res_df, 10)
 
+ggplot(data = res_df, 
+       mapping = aes(x = log2FoldChange, y = -log(padj, 10))) +
+  geom_point(size = 1, shape = 21) +
+  theme_bw() +
+  labs(title = "Mouse Adult vs Embryonic Cortex | Volcano Plot")
+# wonder if filtering out lowly expressed genes earlier would make a difference?
 
+ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Volcano-plot.png",
+       width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
 
 
 
 # Heatmap ----
+## work with log transformed data, so variance is approximately the same across different mean values
+rld_df <- assay(rld) 
+head(rld_df)
+
+## find the top 100 varying genes
+topVarGenes <- head(order(rowVars(rld_df), decreasing = TRUE), 200)
+topVarGeneCounts <- rld_df[topVarGenes, ]
+
+## plot using pheatmap
+pheatmap(topVarGeneCounts,
+         color=colorRampPalette(c("navy", "white", "red"))(50),
+         scale = "row",                          # scale by gene
+         show_rownames = FALSE,
+         fontsize = 6,
+         #cutree_cols = 2,
+         annotation_col = metadata_df,
+         annotation_colors = list(
+           DevStage = c("Adult" = "#009E73", "Embryonic" = "#CC79A7")
+         )) %>%
+  as.ggplot() +
+  labs(title = "Mouse Adult vs Embryonic Cortex | Heatmap",
+       subtitle = "(top 200 varying gene) \n")
+
+ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Heatmap.png",
+       width = 5, height = 5, dpi = 300, unit = "in", bg = "white")
 
 
 # Clear environment at the end of the session ----
