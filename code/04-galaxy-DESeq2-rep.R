@@ -104,14 +104,14 @@ normalized_counts["Tfrc", ]
 
 ## Differential Expression Analysis ----
 dds <- DESeq(dds)
-res <- results(dds, contrast = c("DevStage", "Adult", "Embryonic"))
 
+res <- results(dds, contrast = c("DevStage", "Adult", "Embryonic"),
+               alpha = 0.05)       # note, unless specified, alpha defaults to 0.1
 res
 summary(res)           
-## note, the results function default to adjusted p-value < 0.1
-## we could specify cutoff using results(dds, alpha = 0.05)
 
 res_df <- as.data.frame(res)
+
 res_df["Tfrc", ]
 ## spot check matches galaxy output!
 
