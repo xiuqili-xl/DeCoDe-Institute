@@ -106,7 +106,7 @@ summarized_exp$label <- factor(summarized_exp$label, levels = summarized_exp$lab
 
 
 ## export SummarizedExperiment as a RDS file
-saveRDS(summarized_exp, here("data_processed", "GSE96870", "GEO96870_SummarizedExperiment.rds"))
+saveRDS(summarized_exp, here("outputs_rds", "GSE96870", "GSE96870_SummarizedExperiment.rds"))
 
 
 
@@ -128,7 +128,7 @@ mapIds(x = org.Mm.eg.db,             # annotation package
 library(DESeq2)
 
 ## Read in RDS object 
-## summarized_exp <- readRDS(here("data_other", "GEO96870_SummarizedExperiment.rds"))
+## summarized_exp <- readRDS(here("outputs_rds", "GSE96870", "GSE96870_SummarizedExperiment.rds"))
 ## This is what Carpenty lesson did... but it seems too complexed...
 
 

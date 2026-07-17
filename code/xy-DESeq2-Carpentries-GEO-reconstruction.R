@@ -11,8 +11,8 @@ library(here)
 
 
 # Load Carpentry data ----
-carpentry_counts <- read_csv(here("data_other", "GSE96870_counts_cerebellum.csv"))
-carpentry_metadata <- read_csv(here("data_other", "GSE96870_coldata_cerebellum.csv"))
+carpentry_counts <- read_csv(here("data_raw", "GSE96870", "GSE96870_counts_cerebellum.csv"))
+carpentry_metadata <- read_csv(here("data_raw", "GSE96870", "GSE96870_coldata_cerebellum.csv"))
 
 
 
@@ -24,7 +24,7 @@ gsm_list <- carpentry_metadata$sample
 
 
 # name of directory
-gsm_dir <- here("data_other", "GSE96870_GEO-download")
+gsm_dir <- here("data_raw", "GSE96870", "GSE96870_GEO-download")
 
 
 # loop through each GSM and download its supplementary files
