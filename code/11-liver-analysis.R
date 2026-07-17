@@ -14,21 +14,21 @@ library(here)
 rm(list = ls())
 
 ## Previously saved animal and sample data 
-exp_group_assignment <- read_csv(here("data_processed", "exp_group_assignment_copy.csv"),
+exp_group_assignment <- read_csv(here("data_processed", "MoTrPAC", "exp_group_assignment_copy.csv"),
                                  col_types = c(rep("c", 6), "n"))
-exp_sample_info <- read_csv(here("data_processed", "exp_sample_info_copy.csv"),
+exp_sample_info <- read_csv(here("data_processed", "MoTrPAC", "exp_sample_info_copy.csv"),
                             col_types = c(rep("c", 5)))
 
 
 ## SRA metadata ----
 ## downloaded from https://www.ncbi.nlm.nih.gov/Traces/study/?acc=PRJNA908279&o=acc_s%3Aa
-sra_rna_metadata <- read_csv(here("data_raw", "SRARunSelector_Metadata_RNA-seq.csv"),
+sra_rna_metadata <- read_csv(here("data_raw", "MoTrPAC", "SRARunSelector_Metadata_RNA-seq.csv"),
                              name_repair = "universal")
 glimpse(sra_rna_metadata)
 
 
 ## GEO metadata ----
-geo_rna_metadata <- read_csv(here("data_raw", "GEO_Samples_Metadata_RNA-Seq.csv"),
+geo_rna_metadata <- read_csv(here("data_raw", "MoTrPAC", "GEO_Samples_Metadata_RNA-Seq.csv"),
                              name_repair = "universal")
 glimpse(geo_rna_metadata)
 
@@ -62,18 +62,20 @@ liver_rna_sample_info
 
 ## Find corresponding SRA records ----
 ## viallabel is included in the file name of SRA record
-sra_rna_metadata_for_analysis <- sra_rna_metadata %>%
+sra_rna_metadata_liver <- sra_rna_metadata %>%
   filter(str_detect(Sample.Name, "liver")) %>%
   filter(treatment %in% c("Reference", "Control - 8 weeks", "Training - 8 weeks")) %>%
   select(Run, sex, strain, tissue, treatment, Vial_Label, starts_with("Library"), 
          Bytes, BioProject, BioSample, Experiment, SRA.Study, Sample.Name) %>%
   arrange(sex, treatment, Vial_Label) 
 
-write_csv(sra_rna_metadata_for_analysis, here("outputs_csv", "SRARunSelector_metadata_for_analysis.csv"))
+write_csv(sra_rna_metadata_liver, 
+          here("outputs_csv", "MoTrPAC_exp", "SRARunSelector_metadata_liver.csv"))
+
 
 ## pick vial 3 for female, control vs 8 wk --- analysis in Galaxy
 ## SRR25251380 (female, control, 90252016803) and SRR25251378 (female, 8 wk, 90258016803)
-sra_rna_metadata_for_analysis %>%
+sra_rna_metadata_liver %>%
   filter(Run %in% c("SRR25251380", "SRR25251378")) %>%
   view()
 

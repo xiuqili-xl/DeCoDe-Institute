@@ -96,7 +96,7 @@ sample_info <- pheno %>%
   arrange(sex, group, pid, tissue, viallabel) 
 
 glimpse(sample_info)
-write_csv(sample_info, here("outputs_csv", "exp_sample_info.csv"))
+write_csv(sample_info, here("outputs_csv", "MoTrPAC_exp", "exp_sample_info.csv"))
 
 
 # wrangle watsc_rna_gene_filtered 
@@ -145,7 +145,7 @@ autoplot(watsc_exp_subset_pca, data = watsc_exp_subset, color = "group", shape =
   labs(title = "PCA of Subcutaneous WAT gene expression",
        subtitle = "(8wk endurance training vs control; female and male)")
 
-ggsave(path = here("graphs"), filename = "watsc_pac_8wk.png",
+ggsave(path = here("graphs", "MoTrPAC_DGE"), filename = "watsc_pac_8wk.png",
        width = 6, height = 5, dpi = 300, units = "in")
 
 
@@ -183,7 +183,7 @@ ggplot() +
   labs(title = "PCA of Subcutaneous WAT gene expression",
        subtitle = "(8wk endurance training vs control; male)")
 
-ggsave(path = here("graphs"), filename = "watsc_volcano_8wk_male.png",
+ggsave(path = here("graphs", "MoTrPAC_DGE"), filename = "watsc_volcano_8wk_male.png",
        width = 6, height = 5, dpi = 300, units = "in")
 
 

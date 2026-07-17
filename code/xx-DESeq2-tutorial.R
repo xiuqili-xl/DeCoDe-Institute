@@ -10,7 +10,6 @@
 # note, fastq file available --- could investigate
 
 
-
 # Load libraries ----
 library(DESeq2)
 library(tidyverse)
@@ -21,7 +20,7 @@ library(here)
 # the tutorial provides a link to the raw counts, so does Expression Atlas
 # start by comparing the two
 rawCounts_tutorial <- read.delim("http://genomedata.org/gen-viz-workshop/intro_to_deseq2/tutorial/E-GEOD-50760-raw-counts.tsv")
-rawCounts_original <- read.delim(here("data_other", "E-GEOD-50760-raw-counts.tsv")) %>%
+rawCounts_original <- read.delim(here("data_raw", "E-GEOD-50760", "E-GEOD-50760-raw-counts.tsv")) %>%
   select(Gene.ID, Gene.Name, sort(names(.)))
 
 glimpse(rawCounts_tutorial)
@@ -49,6 +48,8 @@ setdiff(rawCounts_original$Gene.ID, rawCounts_tutorial$Gene.ID)
 # so there are gene Gene.ID that's unique to either dataset
 # not sure what to make of this...
 # for now... proceed with using sampleData_tutorial to replicate tutorial
+
+rm(rawCounts_original, rawCounts_tutorial)
 
 
 # Input data ----
@@ -180,7 +181,7 @@ ggplot(data = deseq2ResDF,
        subtitle = "Colorectal Cancer Data (E-GEOD-50760)",
        x = "mean of normalized counts", y = "log fold change") 
 
-ggsave(path = here("graphs_other"), filename = "E-GEOD-50760_MA-plot.png",
+ggsave(path = here("graphs", "E-GEOD-50760"), filename = "E-GEOD-50760_MA-plot.png",
        width = 6, height = 4, dpi = 300, units = "in")
 
 
@@ -200,7 +201,7 @@ ggplot(data = deseq2ResDF,
        subtitle = "Colorectal Cancer Data (E-GEOD-50760)",
        x = "mean of normalized counts", y = "log fold change")
 
-ggsave(path = here("graphs_other"), filename = "E-GEOD-50760_MA-plot_density.png",
+ggsave(path = here("graphs", "E-GEOD-50760"), filename = "E-GEOD-50760_MA-plot_density.png",
        width = 6, height = 4, dpi = 300, units = "in")
 
 
@@ -229,7 +230,8 @@ ggplot(data = otop2Counts,
   labs(title = "DESeq2 Tutorial | Normalized Count of OTOP2",
        subtitle = "Colorectal Cancer Data (E-GEOD-50760)") 
   
-ggsave(path = here("graphs_other"), filename = "E-GEOD-50760_Normalized Count of OTOP2.png",
+ggsave(path = here("graphs", "E-GEOD-50760"), 
+       filename = "E-GEOD-50760_Normalized Count of OTOP2.png",
        width = 6, height = 4, dpi = 300, units = "in")
   
   
@@ -304,7 +306,7 @@ clusterSample$order
 
 clusterSample_reorderd <- clusterSample$labels[clusterSample$order]
 
-deseq2VST_sig_long %>% 
+heatmap1 <- deseq2VST_sig_long %>% 
   mutate(Run = factor(Run, levels = clusterSample_reorderd)) %>%
   ggplot(mapping = aes(x = Run, y = Gene, fill = value)) +
   geom_raster() +
@@ -313,6 +315,7 @@ deseq2VST_sig_long %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank())
 
+heatmap1
 
 
 ## combine dendrogram with heatmap 
@@ -348,7 +351,9 @@ tumor_heatmap <- pheatmap(deseq2VST_sig2,
            tissueType = c("normal epithelium" = "lightgreen", "primary tumor" = "salmon", "liver metastasis" = "darkred")
          )) 
 
-png(filename = here("graphs_other", "E-GEOD-50760_HeatmapVST-1.png"), 
+tumor_heatmap
+
+png(filename = here("graphs", "E-GEOD-50760", "E-GEOD-50760_HeatmapVST-1.png"), 
     width = 8, height = 6, res = 300, units = "in")
 tumor_heatmap
 dev.off()
@@ -370,7 +375,7 @@ pheatmap(deseq2VST_sig2,
          )) %>%
   as.ggplot()
 
-ggsave(path = here("graphs_other"), filename = "E-GEOD-50760_HeatmapVST-2.png",
+ggsave(path = here("graphs", "E-GEOD-50760"), filename = "E-GEOD-50760_HeatmapVST-2.png",
        width = 8, height = 6, dpi = 300, units = "in", bg = "white")
 
 

@@ -1,14 +1,15 @@
 # Goal ----
-
+# Explore GTEx dataset used for DeCoDe Institute Galaxy Day 2 
+# Replicate the DESeq analysis
 
 
 # Dataset ----
-
 ## gtex_tissue_train_200x100.tsv ----
-# A subset of GTEx transcripts_tpm (genes and people) used during DeCoDe Galaxy Day 2 Training
+# A subset of GTEx transcripts_tpm (genes and people), focusing on
 # tissue with a lot of expression data + genes with bigger variability in expression (ANOVA)
 # http://data.schatz-lab.org/cwic_training/
-# also avaiable on https://github.com/mschatz/data/tree/main/cwic_training)
+# also available on https://github.com/mschatz/data/tree/main/cwic_training)
+
 
 # Load libraries ----
 library(tidyverse)
@@ -16,8 +17,8 @@ library(here)
 
 
 # Import data ----
-train_data <- read_delim(here("data_raw", "gtex_tissue_train_200x100.tsv"))
-test_data <- read_delim(here("data_raw", "gtex_tissue_test_labeled_100x100.tsv"))
+train_data <- read_delim(here("data_raw", "GTEx_Subset", "gtex_tissue_train_200x100.tsv"))
+test_data <- read_delim(here("data_raw", "GTEx_Subset", "gtex_tissue_test_labeled_100x100.tsv"))
 
 
 # Explore data ----
@@ -27,7 +28,7 @@ unique(train_data$SampleID)        # 200 unique Sample ID
 ## named GTEX-<DonorID>-<TissueID>
 
 unique(train_data$Tissue)          # 10 different types of tissues
-train_data %>% count(Tissue)       # 20 donors per tissue
+train_data %>% dplyr::count(Tissue)       # 20 donors per tissue
 
 
 # Galaxy activities ----
@@ -49,7 +50,7 @@ train_data_summary_long <- train_data %>%
 ### first three genes
 train_data_summary_long %>%
   filter(Gene %in% colnames(train_data)[3:5]) %>%
-  rename(ave = TPM_ave, sd = TMP_sd) %>%
+  select(ave = TPM_ave, sd = TMP_sd, everything()) %>%
   pivot_wider(id_cols = Tissue, names_from = Gene, 
               values_from = c("ave", "sd"), names_glue = "{Gene}_{.value}") %>%
   select(Tissue, starts_with("RBPJL"), starts_with("ENSG00000261012"), starts_with("FAM83C"))
@@ -96,7 +97,7 @@ pheatmap(mat = train_data_graph,
   labs(title = "GTEx Data Subset | Heatmap",
        subtitle = "(replicating analysis in Galaxy)\n")
 
-ggsave(path = here("graphs_other"), filename = "GETxSubset_Heatmap.png",
+ggsave(path = here("graphs", "GTEx_Subset"), filename = "GETxSubset_Heatmap.png",
        width = 10, height = 6, dpi = 300, unit = "in", bg = "white")
 
 ## note, further customization might require `ComplexHeatmap`
@@ -150,7 +151,7 @@ train_data_pca_plotly <- plot_ly(
   hoverinfo = "text"     # Force plotly to ONLY display your custom text
 ) %>%
   layout(
-    showlegend = FALSE, 
+#    showlegend = FALSE, 
     scene = list(
       xaxis = list(title = 'PC1'),
       yaxis = list(title = 'PC2'),
@@ -161,7 +162,7 @@ train_data_pca_plotly <- plot_ly(
 train_data_pca_plotly
 
 saveWidget(train_data_pca_plotly, 
-           file = here("graphs_other", "GETxSubset_PCA_plotly.html"),
+           file = here("graphs", "GTEx_Subset", "GETxSubset_PCA_plotly.html"),
            selfcontained = TRUE, 
            title = "GTEx Data Subset | PCA")
 

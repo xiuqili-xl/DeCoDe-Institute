@@ -21,14 +21,14 @@ library(ggplotify)
 # Actual data used: https://raw.githubusercontent.com/carpentries-incubator/bioc-rnaseq/main/episodes/data/GSE96870_counts_cerebellum.csv
 # Downloaded locally for access and preservation
 
-count_data <- read_csv(here("data_other", "GSE96870_counts_cerebellum.csv")) %>%
+count_data <- read_csv(here("data_raw", "GSE96870", "GSE96870_counts_cerebellum.csv")) %>%
   column_to_rownames(var = "gene")
 
-metadata <- read_csv(here("data_other", "GSE96870_coldata_cerebellum.csv")) %>%
+metadata <- read_csv(here("data_raw", "GSE96870", "GSE96870_coldata_cerebellum.csv")) %>%
   column_to_rownames(var = "sample")
 
 # gene info
-gene_info <- read_delim(file = here("data_other", "GSE96870_rowranges.tsv"), 
+gene_info <- read_delim(file = here("data_raw", "GSE96870", "GSE96870_rowranges.tsv"), 
                         delim = "\t", col_types = c("ENTREZID" = "c")) %>%
   column_to_rownames(var = "gene")
 
@@ -106,7 +106,7 @@ summarized_exp$label <- factor(summarized_exp$label, levels = summarized_exp$lab
 
 
 ## export SummarizedExperiment as a RDS file
-saveRDS(summarized_exp, here("data_other", "GEO96870_SummarizedExperiment.rds"))
+saveRDS(summarized_exp, here("data_processed", "GSE96870", "GEO96870_SummarizedExperiment.rds"))
 
 
 
@@ -250,7 +250,7 @@ ComplexHeatmap::Heatmap(
   as.ggplot() +
   labs(title = "GSE96870: Effect of Infection on Cerebellum | Sample-to-Sample Distance")
 
-ggsave(path = here("graphs_other"), filename = "GSE96870_Sample-to-Sample-Distance.png",
+ggsave(path = here("graphs", "GSE96870"), filename = "GSE96870_Sample-to-Sample-Distance.png",
        width = 6.2, height = 5, dpi = 300, unit = "in", bg = "white")
 
 
@@ -273,7 +273,7 @@ ggplot(data = pca_data,
        x = paste0("PC1: ", percent_var[1], "% variance"),
        y = paste0("PC2: ", percent_var[2], "% variance"))
 
-ggsave(path = here("graphs_other"), filename = "GSE96870_PCA.png",
+ggsave(path = here("graphs", "GSE96870"), filename = "GSE96870_PCA.png",
        width = 6, height = 4, dpi = 300, unit = "in")
 
 
@@ -418,7 +418,7 @@ ComplexHeatmap::Heatmap(
   as.ggplot() +
   labs(title = "GSE96870: Effect of Infection on Cerebellum | Heatmap")
 
-ggsave(path = here("graphs_other"), filename = "GSE96870_Heatmap.png",
+ggsave(path = here("graphs", "GSE96870"), filename = "GSE96870_Heatmap.png",
        width = 8, height = 4, dpi = 300, unit = "in", bg = "white")
 
 
@@ -426,7 +426,7 @@ ggsave(path = here("graphs_other"), filename = "GSE96870_Heatmap.png",
 ## export DESeq results ----
 as.data.frame(res_time1) %>% 
   rownames_to_column(var = "gene") %>%
-  write_csv(here("outputs_other", "GSE96870_DESeq_results.csv"))
+  write_csv(here("outputs_csv", "GSE96870", "GSE96870_DESeq_results.csv"))
 ## could combine with gene_info too
 
 

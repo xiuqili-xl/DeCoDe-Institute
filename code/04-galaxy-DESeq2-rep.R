@@ -1,5 +1,5 @@
 # Goal -----
-# Replicate DESeq2 analysis that was performed on Galaxy during the DeCoDe Institute
+# Replicate DESeq2 analysis that was performed on DeCoDe Institute Galaxy Day 1 
 
 
 # Useful resources ----
@@ -20,7 +20,8 @@ library(pheatmap)
 library(ggplotify)
 
 
-# Import data ----
+# Create count matrix and export ----
+# can skip this step entirely in the future 
 count_AM1 <- read.delim(file = "https://zenodo.org/records/20531535/files/gene_count_AM1.txt", 
                         sep = "\t", col.names = c("Feature", "AM1"))
 count_AM2 <- read.delim(file = "https://zenodo.org/records/20531535/files/gene_count_AM2.txt", 
@@ -38,8 +39,7 @@ count_FM5 <- read.delim(file = "https://zenodo.org/records/20531535/files/gene_c
 all(count_AM1$Feature == count_FM4$Feature)
 ## presumably, they all have the same feature
 
-
-# Combine into Count Matrix ----
+## combine into Count Matrix
 count_combined <- count_AM1 %>%
   inner_join(count_AM2, by = "Feature") %>%
   inner_join(count_AM3, by = "Feature") %>%
@@ -49,10 +49,17 @@ count_combined <- count_AM1 %>%
 
 nrow(count_combined)         # inner_join() confirms that all datasets have the same number of features
 
+## export count matrix
+write_csv(count_combined, file = here("outputs_csv", "MouseDevCortex", "MouseDevCortex_counts.csv"))
+
 ## remove individual samples from environment
 rm(count_AM1, count_AM2, count_AM3, count_FM3, count_FM4, count_FM5)
 
-## construct count matrix for DESEq2
+
+
+# Construct count matrix for DESEq2 ----
+count_combined <- read_csv(here("outputs_csv", "MouseDevCortex", "MouseDevCortex_counts.csv"))
+
 count_data <- count_combined %>%
   column_to_rownames(var = "Feature")
 
@@ -100,6 +107,8 @@ normalized_counts <- counts(dds, normalized = TRUE)
 normalized_counts["Tfrc", ]
 
 ## can write to file for downstream analysis
+write_csv(as.data.frame(normalized_counts) %>% rownames_to_column(var = "Feature"),
+          file = here("outputs_csv", "MouseDevCortex", "MouseDevCortex_counts_normalized.csv"))
 
 
 ## Differential Expression Analysis ----
@@ -114,6 +123,8 @@ res_df <- as.data.frame(res)
 
 res_df["Tfrc", ]
 ## spot check matches galaxy output!
+
+write_csv(res_df, here("outputs_csv", "MouseDevCortex", "MouseDevCortex_DE_results.csv"))
 
 
 
@@ -147,7 +158,7 @@ ggplot(data = PCA_data,
   labs(title = "Mouse Adult vs Embryonic Cortex | PCA",
        x = "PC1 (98% variance)", y = "PC2 (1% variance)")
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_PCA.png",
+ggsave(path = here("graphs", "MouseDevCortex"), filename = "MouseDevCortex_Unfiltered_PCA.png",
        width = 6, height = 4, dpi = 300, unit = "in")
 
 
@@ -171,7 +182,8 @@ pheatmap(sampleDistMatrix,
   labs(title = "Mouse Adult vs Embryonic Cortex | Sample Distance Heatmap")
 ## visually identical to galaxy output
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Sample-Distance-Heatmap.png",
+ggsave(path = here("graphs", "MouseDevCortex"), 
+       filename = "MouseDevCortex_Unfiltered_Sample-Distance-Heatmap.png",
        width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
 
 
@@ -186,7 +198,8 @@ ggplot(data = res_df,
   labs(title = "Mouse Adult vs Embryonic Cortex | Volcano Plot")
 ## wonder if filtering out lowly expressed genes earlier would make a difference?
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Volcano-plot.png",
+ggsave(path = here("graphs", "MouseDevCortex"), 
+       filename = "MouseDevCortex_Unfiltered_Volcano-plot.png",
        width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
 
 
@@ -215,7 +228,8 @@ pheatmap(topVarGeneCounts,
   labs(title = "Mouse Adult vs Embryonic Cortex | Heatmap",
        subtitle = "(top 200 varying gene) \n")
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Heatmap.png",
+ggsave(path = here("graphs", "MouseDevCortex"), 
+       filename = "MouseDevCortex_Unfiltered_Heatmap.png",
        width = 5, height = 5, dpi = 300, unit = "in", bg = "white")
 
 
@@ -266,7 +280,7 @@ ggplot(data = PCA_filtered_data,
        x = "PC1 (98% variance)", y = "PC2 (1% variance)")
 # very sutble change
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_PCA_filtered.png",
+ggsave(path = here("graphs", "MouseDevCortex"), filename = "MouseDevCortex_Filtered_PCA.png",
        width = 6, height = 4, dpi = 300, unit = "in")
 
 
@@ -290,7 +304,8 @@ pheatmap(sampleDistMatrix_filtered,
   labs(title = "Mouse Adult vs Embryonic Cortex | Sample Distance Heatmap (filtered)")
 ## visually identical to galaxy output
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Sample-Distance-Heatmap_filtered.png",
+ggsave(path = here("graphs", "MouseDevCortex"), 
+       filename = "MouseDevCortex_Filtered_Sample-Distance-Heatmap.png",
        width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
 
 
@@ -305,7 +320,8 @@ ggplot(data = res_filtered_df,
   labs(title = "Mouse Adult vs Embryonic Cortex | Volcano Plot (filtered)")
 ## wonder if filtering out lowly expressed genes earlier would make a difference?
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Volcano-plot_filtered.png",
+ggsave(path = here("graphs", "MouseDevCortex"), 
+       filename = "MouseDevCortex_Filtered_Volcano-plot.png",
        width = 6, height = 6, dpi = 300, unit = "in", bg = "white")
 
 
@@ -334,12 +350,8 @@ pheatmap(topVarGeneCounts_filtered,
   labs(title = "Mouse Adult vs Embryonic Cortex | Heatmap (filtered)",
        subtitle = "(top 200 varying gene) \n")
 
-ggsave(path = here("graphs_other"), filename = "MouseDevCortex_Heatmap_filtered.png",
+ggsave(path = here("graphs", "MouseDevCortex"), filename = "MouseDevCortex_Filtered_Heatmap.png",
        width = 5, height = 5, dpi = 300, unit = "in", bg = "white")
-
-
-
-
 
 
 

@@ -53,9 +53,9 @@ PHENO %>%
 # so, each entry is uniquly identified by pid, labelid, and viallabel
 
 
-length(unique(PHENO$pid))              # a total of 147 animals
-unique(PHENO$group)
-unique(PHENO$sex)
+length(unique(PHENO$pid))         # a total of 147 animals
+unique(PHENO$group)               # 5 groups
+unique(PHENO$sex)                 # 2 sexes
 
 # figure out group assignment
 group_assignment <- PHENO %>%
@@ -63,7 +63,7 @@ group_assignment <- PHENO %>%
   mutate(group = factor(group, levels = c("1w", "2w", "4w", "8w", "control"))) %>%
   arrange(sex, group, pid)
 
-write_csv(group_assignment, here("outputs_csv", "exp_group_assignment.csv"))
+write_csv(group_assignment, here("outputs_csv", "MoTrPAC_exp", "exp_group_assignment.csv"))
 
 
 
@@ -73,7 +73,7 @@ pheno_terminal_weight <- PHENO %>%
   distinct() %>%
   arrange(sex, group, pid)
 
-write_csv(pheno_terminal_weight, here("outputs_csv", "pheno_weights_terminal.csv"))
+write_csv(pheno_terminal_weight, here("outputs_csv", "MoTrPAC_pheno", "pheno_weights_terminal.csv"))
 
 pheno_terminal_weight %>%
   group_by(sex, group) %>%
@@ -97,7 +97,7 @@ pheno_terminal_weight %>%
   theme(legend.position = "none")
 
 
-ggsave(path = here("graphs"), filename = "pheno_bw_terminal.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_bw_terminal.png",
        width = 6, height = 4, dpi = 300, units = "in")
 
 
@@ -111,7 +111,7 @@ pheno_bw_key_timepoints <- PHENO %>%
   distinct() %>%
   arrange(sex, group, pid)
 
-write_csv(pheno_bw_key_timepoints, here("outputs_csv", "pheno_bw_key_timepoints.csv"))
+write_csv(pheno_bw_key_timepoints, here("outputs_csv", "MoTrPAC_pheno", "pheno_bw_key_timepoints.csv"))
 
 
 pheno_bw_change <- pheno_bw_key_timepoints %>%
@@ -144,7 +144,7 @@ ggplot(data = pheno_bw_change) +
        subtitle = "(`familiarization.weight` vs `terminal.weight.bw`)", 
        x = "", y = "body weight(g)") 
 
-ggsave(path = here("graphs"), filename = "pheno_bw_familiarization_vs_terminal.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_bw_familiarization_vs_terminal.png",
        width = 4, height = 6, dpi = 300, units = "in")
 
 
@@ -194,7 +194,7 @@ pheno_vo2 <- PHENO %>%
 
 nrow(pheno_vo2)
 
-write_csv(pheno_vo2, here("outputs_csv", "pheno_vo2.csv"))
+write_csv(pheno_vo2, here("outputs_csv", "MoTrPAC_pheno", "pheno_vo2.csv"))
 
 
 pheno_vo2 %>% 
@@ -211,7 +211,7 @@ pheno_vo2 %>%
        subtitle = "(`vo2.max.test.vo2_max_1`)") +
   theme(legend.position = "none")
 
-ggsave(path = here("graphs"), filename = "pheno_vo2_visit1_vo2max.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_vo2_visit1_vo2max.png",
        width = 6, height = 4, dpi = 300, units = "in")
 
 

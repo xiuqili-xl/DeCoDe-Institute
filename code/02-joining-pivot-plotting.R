@@ -15,12 +15,12 @@ library(here)
 # Load data ----
 data(PHENO)
 
-group_assignment <- read_csv(here("outputs_csv", "group_assignment.csv"))
-pheno_bw_key_timepoint <- read_csv(here("outputs_csv", "pheno_bw_key_timepoints.csv")) %>%
+group_assignment <- read_csv(here("data_processed", "MoTrPAC", "exp_group_assignment_copy.csv"))
+pheno_bw_key_timepoint <- read_csv(here("outputs_csv", "MoTrPAC_pheno",  "pheno_bw_key_timepoints.csv")) %>%
   mutate(pid = as.character(pid))
-pheno_weights_terminal <- read_csv(here("outputs_csv", "pheno_weights_terminal.csv")) %>%
+pheno_weights_terminal <- read_csv(here("outputs_csv", "MoTrPAC_pheno",  "pheno_weights_terminal.csv")) %>%
   mutate(pid = as.character(pid))
-pheno_vo2 <- read_csv(here("outputs_csv", "pheno_vo2.csv")) %>%
+pheno_vo2 <- read_csv(here("outputs_csv", "MoTrPAC_pheno",  "pheno_vo2.csv")) %>%
   mutate(pid = as.character(pid))
 
 
@@ -80,6 +80,7 @@ PHENO %>%
 # sacrifice is two days after training_day40, vo2_day2 is 6 days before sacrifice
 # matches what's report in Schenk 2024 (Figure 1)
 
+
 ## Graph VO2 weight change ----
 pheno_vo2_change <- pheno_vo2 %>%
   filter(group %in% c("control", "8w")) %>%
@@ -114,7 +115,7 @@ ggplot(data = pheno_vo2_change) +
 # based on the number and comparing it to Schnek et al 2024 (Figure 3), 
 # it looks like these have already be normalize by animal body weight
 
-ggsave(path = here("graphs"), filename = "pheno_vo2_pre_vs_post.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_vo2_pre_vs_post.png",
        width = 5, height = 7, dpi = 300, units = "in")
 
 
@@ -132,7 +133,7 @@ pheno_nmr <- PHENO %>%
   distinct() %>%
   arrange(sex, group, pid)
 
-write_csv(pheno_nmr, here("outputs_csv", "pheno_nmr.csv"))
+write_csv(pheno_nmr, here("outputs_csv", "MoTrPAC_pheno", "pheno_nmr.csv"))
 
 
 ## sanity check: when where nmr testing carried out?
@@ -186,7 +187,7 @@ ggplot(data = pheno_nmr_weight_change) +
        subtitle = "(`nmr.testing.nmr_weight_1` vs `nmr.testing.nmr_weight_2`)", 
        x = "", y = "Body mass(g)") 
 
-ggsave(path = here("graphs"), filename = "pheno_nmr_weight_pre_vs_post.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_nmr_weight_pre_vs_post.png",
        width = 5, height = 7, dpi = 300, units = "in")
 
 
@@ -222,7 +223,7 @@ ggplot(data = pheno_nmr_lean_change) +
        subtitle = "(`nmr.testing.nmr_lean_1` vs `nmr.testing.nmr_lean_2`)", 
        x = "", y = "NMR % lean mass") 
 
-ggsave(path = here("graphs"), filename = "pheno_nmr_lean_percent_pre_vs_post.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_nmr_lean_percent_pre_vs_post.png",
        width = 5, height = 7, dpi = 300, units = "in")
 
 ## overall matches Schenk Figure S5
@@ -260,7 +261,7 @@ ggplot(data = pheno_nmr_fat_change) +
        subtitle = "(`nmr.testing.nmr_fat_1` vs `nmr.testing.nmr_fat_2`)", 
        x = "", y = "NMR % fat mass") 
 
-ggsave(path = here("graphs"), filename = "pheno_nmr_fat_percent_pre_vs_post.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_nmr_fat_percent_pre_vs_post.png",
        width = 5, height = 7, dpi = 300, units = "in")
 ## overall matches Schenk Figure S5
 
@@ -288,7 +289,7 @@ pheno_training_info <- PHENO %>%
   distinct() %>%
   arrange(sex, group, pid)
 
-write_csv(pheno_training_info, here("outputs_csv", "pheno_training_info.csv"))
+write_csv(pheno_training_info, here("outputs_csv", "MoTrPAC_pheno", "pheno_training_info.csv"))
 
 
 pheno_training_data <- PHENO %>%
@@ -297,7 +298,7 @@ pheno_training_data <- PHENO %>%
   distinct() %>%
   arrange(sex, group, pid)
 
-write_csv(pheno_training_data, here("outputs_csv", "pheno_training_data.csv"))
+write_csv(pheno_training_data, here("outputs_csv", "MoTrPAC_pheno", "pheno_training_data.csv"))
 
 
 # Graph weight change during training -----
@@ -330,7 +331,7 @@ ggplot(data = pheno_training_wt_summary %>%
        subtitle = "(mean +/- standard error)", 
        x = "Days of training", y = "Body mass (g)")
 
-ggsave(path = here("graphs"), filename = "pheno_training_weight.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_training_weight.png",
        width = 6, height = 6, dpi = 300, units = "in")
 
 
@@ -366,5 +367,5 @@ ggplot(data = pheno_training_lact_summary %>%
        x = "Days of training", y = "Blood lactate (?unit)")
 
 
-ggsave(path = here("graphs"), filename = "pheno_training_lactate.png",
+ggsave(path = here("graphs", "MoTrPAC_pheno"), filename = "pheno_training_lactate.png",
        width = 6, height = 6, dpi = 300, units = "in")
