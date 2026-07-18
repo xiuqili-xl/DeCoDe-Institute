@@ -58,9 +58,9 @@ Relevant scripts include:
 
 - `code/04-galaxy-DESeq2-rep.R`
 - `code/05-gtex-data.R`
-- `code/xx-DESeq2-tutorial.R`
-- `code/xy-DESeq2-Carpentries_Main.R`
-- `code/xy-DESeq2-Carpentries-GEO-reconstruction.R`
+- `code/91-DESeq2-tutorial.R`
+- `code/92-DESeq2-Carpentries_Main.R`
+- `code/92-DESeq2-Carpentries-GEO-reconstruction.R`
 
 
 
