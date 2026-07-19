@@ -69,7 +69,8 @@ skm_gn_rna_da_m8w <- skm_gn_rna_da %>%
 
 head(skm_gn_rna_da_8w) 
 
-## visualize using a volcano plot
+
+## volcano plot ----
 ggplot(data = skm_gn_rna_da_m8w,
        mapping = aes(x = shrunk_logFC,
                      y = -log10(adj_p_value))) +
@@ -91,6 +92,7 @@ feature_to_gene %>%
   filter(feature_ID == "ENSRNOG00000024688")
 
 
+## Differentially expressed genes ----
 ## explore genes with adj_p_value < 0.05
 skm_gn_rna_da_m8w_sig <- skm_gn_rna_da_m8w %>%
   filter(adj_p_value < 0.05)
@@ -99,12 +101,13 @@ head(skm_gn_rna_da_m8w_sig)
 nrow(skm_gn_rna_da_m8w_sig)      # 102 features, to too bad ;D
 
 
+## Heatmap ----
 ## create a heatmap using skm_gn_rna_norm, so we can visualize representative samples
 ## ultimate goal: find a SRA to pull from (skm-ng, 8w training, male) for Galaxy
 unique(skm_gn_rna_norm$tissue)
 unique(skm_gn_rna_norm$assay)
 
-### pull relevant meta data for skm_gn_rna (include both sex and all weeks)
+## pull relevant meta data for skm_gn_rna (include both sex and all weeks)
 skm_gn_rna_metadata <- sra_rna_metadata %>%
   select(sex, tissue, treatment, viallabel = Vial_Label, Sample.Name) %>%
   filter(str_detect(Sample.Name, "skm-gn"), treatment != "Reference") %>%
@@ -116,7 +119,7 @@ skm_gn_rna_metadata <- sra_rna_metadata %>%
   arrange(treatment, rep)
 
 
-### reorganize rna_norm data (restrict to control and 8wk, male)
+## reorganize rna_norm data (restrict to control and 8wk, male)
 skm_gn_rna_norm_m8w <-  skm_gn_rna_norm %>%
   select(-feature, -tissue, -assay) %>%
   pivot_longer(cols = -feature_ID, names_to = "viallabel", values_to = "norm_exp") %>%
@@ -144,7 +147,7 @@ skm_gn_rna_norm_m8w_heatmap_scaled <- t(scale(t(skm_gn_rna_norm_m8w_heatmap_data
   as.data.frame()
 
 
-### create metadata for heatmap annotation
+## create metadata for heatmap annotation
 skm_gn_rna_norm_m8w_heatmap_metadata <- data.frame(
   sample = colnames(skm_gn_rna_norm_m8w_heatmap_data)
 ) %>% 
@@ -152,7 +155,7 @@ skm_gn_rna_norm_m8w_heatmap_metadata <- data.frame(
   column_to_rownames(var = "sample")
 
 
-### generate heatmp
+## generate heatmp
 Heatmap(
   skm_gn_rna_norm_m8w_heatmap_scaled,
   name = "z-score",
@@ -176,10 +179,10 @@ ggsave(path = here("graphs", "MoTrPAC_DE"),
        width = 6, height = 8, dpi = 300, unit = "in", bg = "white")
 
 
-### look up Erfe
+## look up Erfe
 skm_gn_rna_norm_m8w_heatmap_scaled ["Erfe", ]    # down regulated in Training
 
-### let's pick Training_Rep5 for Galaxy investigation
+## let's pick Training_Rep5 for Galaxy investigation
 sra_rna_metadata %>%
   filter(sex == "male", treatment == "Training - 8 weeks",
          str_detect(Sample.Name, "skm-gn")) %>%
@@ -190,3 +193,52 @@ sra_rna_metadata %>%
   filter(sex == "male", treatment == "Control - 8 weeks",
          str_detect(Sample.Name, "skm-gn")) %>%
   select(Run, Assay.Type, Sample.Name, treatment, Vial_Label)
+
+
+
+# Explore Galaxy featureCounts output ----
+## Load data and gtf file ----
+g_fc_output <- read_delim(here("data_raw", "MoTrPAC", "SRR25250934_Galaxy_featureCounts.txt"))
+head(g_fc_output)
+
+library(rtracklayer)
+gtf_data <- import(here("data_raw", "MoTrPAC", "rn6.ncbiRefSeq.gtf.gz"))
+gtf_data
+
+gtf_df <- as.data.frame(gtf_data)
+head(gtf_df)
+## not sure if this would be of much use, since the actual MoTrPAC project used RSEM for alignment
+rm(gtf_data, gtf_df)
+
+
+## How does this count compare with what's in `skm_gn_rna_raw`?
+## Run: SRR25250934 correspond to viallabel 90239015512
+SRR25250934_comp <- skm_gn_rna_raw %>%
+  select(feature_ID, raw_count = `90239015512`) %>%
+  left_join(feature_to_gene %>% select(feature_ID, gene_symbol), by = "feature_ID") %>%
+  inner_join(g_fc_output %>% dplyr::rename(galaxy_count = SRR25250934), 
+             by = join_by(gene_symbol == Geneid))
+
+glimpse(SRR25250934_comp)
+# note, 10k were dropped with inner join. could be bc genes are named differently
+
+ggplot(data = SRR25250934_comp %>% filter(raw_count > 10 | galaxy_count > 10 ),
+       mapping = aes(x = raw_count, y = galaxy_count)) +
+  geom_point(shape = 21, color = "black", fill = "grey", alpha = 0.5) +
+  scale_x_continuous(limits = c(0, 1e6), oob = scales::squish) +
+  scale_y_continuous(limits = c(0, 1e6), oob = scales::squish) +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+
+# graph on a log scale to visualize the lower end better
+ggplot(data = SRR25250934_comp %>% filter(raw_count > 5 , galaxy_count > 5 ),
+       mapping = aes(x = raw_count, y = galaxy_count)) +
+  geom_point(shape = 21, color = "black", fill = "grey", alpha = 0.5) +
+  geom_smooth(method = "lm", se = TRUE) +
+  scale_x_log10(limits = c(5, 1e6), oob = scales::squish) +
+  scale_y_log10(limits = c(5, 1e6), oob = scales::squish) +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+# so... pretty good correlation between the two counts
+
+
