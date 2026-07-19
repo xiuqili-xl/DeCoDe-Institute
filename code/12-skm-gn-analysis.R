@@ -38,10 +38,10 @@ sra_rna_metadata_t %>%
 ## Sample info ----
 exp_sample_info <- read_csv(here("data_processed", "MoTrPAC", "exp_sample_info_copy.csv"),
                             col_types = c(rep("c", 5)))
+
 exp_sample_info %>%
   filter(viallabel == "90239015512" )
 ## pid == 10027599
-
 
 
 
@@ -58,7 +58,7 @@ feature_to_gene <- FEATURE_TO_GENE
 head(feature_to_gene)
 
 
-# Quick analysis | DE genes in control vs 8 wk males ----
+# DE genes in control vs 8 wk males ----
 ## use skm_gn_rna_da directly
 skm_gn_rna_da_m8w <- skm_gn_rna_da %>%
   filter(sex == "male", comparison_group == "8w") %>% 
@@ -70,7 +70,7 @@ skm_gn_rna_da_m8w <- skm_gn_rna_da %>%
 head(skm_gn_rna_da_8w) 
 
 
-## volcano plot ----
+## Volcano plot ----
 ggplot(data = skm_gn_rna_da_m8w,
        mapping = aes(x = shrunk_logFC,
                      y = -log10(adj_p_value))) +
@@ -241,4 +241,47 @@ ggplot(data = SRR25250934_comp %>% filter(raw_count > 5 , galaxy_count > 5 ),
   theme_bw()
 # so... pretty good correlation between the two counts
 
+
+
+# Examine training related feature ----
+training_regulated_features <- TRAINING_REGULATED_FEATURES
+
+head(training_regulated_features)
+glimpse(training_regulated_features)
+
+unique(training_regulated_features$assay)
+unique(training_regulated_features$tissue)
+unique(training_regulated_features$training_group)
+
+training_regulated_features %>%
+  filter(assay == "TRNSCRPT") %>%
+  filter(tissue %in% c("WAT-SC", "LIVER", "SKM-GN")) %>%
+  count(tissue, feature_ID) %>%
+  count(tissue)
+
+
+
+# Investigate DE Analysis in the `MotrpacRatTraining6m` package ----
+# https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html#data-in-motrpacrattraining6modata
+# https://github.com/MoTrPAC/MotrpacRatTraining6mo/blob/main/R/fetch_prep_data.R
+# https://github.com/MoTrPAC/MotrpacRatTraining6mo/blob/main/R/transcript_differential_analysis.R
+
+
+
+
+training_regulated_features <- TRAINING_REGULATED_FEATURES
+
+head(training_regulated_features)
+glimpse(training_regulated_features)
+
+unique(training_regulated_features$assay)
+unique(training_regulated_features$tissue)
+unique(training_regulated_features$training_group)
+
+training_regulated_features %>%
+  filter(assay == "TRNSCRPT") %>%
+  filter(tissue %in% c("WAT-SC", "LIVER", "SKM-GN")) %>%
+  count(tissue, feature_ID) %>%
+  count(tissue)
+  
 
