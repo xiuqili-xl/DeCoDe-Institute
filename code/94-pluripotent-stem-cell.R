@@ -73,6 +73,8 @@ meta_data <- data.frame(sample = colnames(read_counts)) %>%
          sample = str_remove(sample, "_.*")) %>%
   column_to_rownames(var = "sample")
 
+meta_data
+
 
 ## create read_counts_cleaned 
 read_counts_cleaned <- read_counts
@@ -121,7 +123,7 @@ dds                   # 18,176 genes
 
 
 
-## Library size difference
+## Library size difference ----
 colSums(counts(dds))                    # note colSums() is a base R function
 
 dds$libSize <- colSums(counts(dds)) 
@@ -205,8 +207,7 @@ meanSdPlot(assay(vsd), ranks = FALSE)
 
 rld <- rlog(dds, blind = TRUE)
 meanSdPlot(assay(rld), ranks = FALSE)
-
-## use vsd moving forward
+## rld is slower
 
 
 ## Sample distances ----
@@ -410,7 +411,7 @@ dox_graph <- res_dox_lfc %>%
   filter(baseMean >= 100)           # cut down on the number of genes to graph to speed things up
 
 dox_graph_subset1 <- dox_graph %>%
-  filter(gene_id %in% c("Tfrc", "Trim28", "Pou5f1", "Sox2", "Kfl4", "Mycbp")) %>%
+  filter(gene_id %in% c("Tfrc", "Trim28", "Pou5f1", "Sox2", "Klf4", "Mycbp")) %>%
   mutate(sig = (padj < 0.05))
 # Oct4 is POU5F1 https://www.ncbi.nlm.nih.gov/datasets/gene/5460/ and mouse ortholog is Pou5f1
 
