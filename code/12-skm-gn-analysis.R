@@ -67,7 +67,7 @@ skm_gn_rna_da_m8w <- skm_gn_rna_da %>%
   arrange(adj_p_value) %>%
   select(feature_ID, gene_symbol, everything())
 
-head(skm_gn_rna_da_8w) 
+head(skm_gn_rna_da_m8w) 
 
 
 ## Volcano plot ----
