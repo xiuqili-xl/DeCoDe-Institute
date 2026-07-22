@@ -1,4 +1,4 @@
-# Overview -----
+# Goal -----
 # MoTrPAC data exploration -- focusing on liver data, control vs 8wk, male and female
 # Start with TRNSCRPT_LIVER, potentially moving to PROT_LIVER and METAB_LIVER
 

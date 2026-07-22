@@ -1,4 +1,4 @@
-# Overview -----
+# Goal -----
 # MoTrPAC data exploration -- focusing on skeletal muscle (gastrocnemius)
 # the first STAR alignment on Galaxy to finish is for sample SRR25250934
 # which is skm-gn_control_male_8w_biological_rep5_vial_90239015512
@@ -202,7 +202,7 @@ g_fc_output <- read_delim(here("data_raw", "MoTrPAC", "SRR25250934_Galaxy_featur
 head(g_fc_output)
 
 library(rtracklayer)
-gtf_data <- import(here("data_raw", "MoTrPAC", "rn6.ncbiRefSeq.gtf.gz"))
+gtf_data <- rtracklayer::import(here("data_raw", "MoTrPAC", "rn6.ncbiRefSeq.gtf.gz"))
 gtf_data
 
 gtf_df <- as.data.frame(gtf_data)
@@ -258,6 +258,35 @@ training_regulated_features %>%
   filter(tissue %in% c("WAT-SC", "LIVER", "SKM-GN")) %>%
   count(tissue, feature_ID) %>%
   count(tissue)
+## This matches what's reported in MoTrPAC Nature 2024, Figure 1c!
+
+skm_gn_trnscrpt_sig_feature <- training_regulated_features %>%
+  filter(assay == "TRNSCRPT", tissue == "SKM-GN") %>%
+  count(feature_ID) 
+
+nrow(skm_gn_trnscrpt_sig_feature)       # 566
+
+
+## next question: how did the individual da dataset turned into the training_regulated_features
+glimpse(skm_gn_rna_da)
+
+table(skm_gn_rna_da$adj_p_value == skm_gn_rna_da$selection_fdr)
+## so adj p value does not 100% match selection_fdr
+
+
+## filter dataset based on selection_fdr
+skm_gn_rna_da_fdr_selected <- skm_gn_rna_da %>%
+  filter(selection_fdr < 0.05) %>%
+  count(feature_ID)                   # this aggregates across sex and timepoints
+
+nrow(skm_gn_rna_da_fdr_selected)      # 566, matching the no of regulated feature reported for SKM-GN TRNSCRPT
+
+identical(sort(skm_gn_rna_da_fdr_selected$feature_ID),
+          sort(skm_gn_trnscrpt_sig_feature$feature_ID))
+## so, by setting selection_fdr < 0.05, we identify the transcripts that are recorded in training_regulated_features
+
+## next step: figure out how to get from rna_raw to rna_da and calculate fdr
+## then, let's try some pathways analysis....
 
 
 
@@ -268,20 +297,4 @@ training_regulated_features %>%
 
 
 
-
-training_regulated_features <- TRAINING_REGULATED_FEATURES
-
-head(training_regulated_features)
-glimpse(training_regulated_features)
-
-unique(training_regulated_features$assay)
-unique(training_regulated_features$tissue)
-unique(training_regulated_features$training_group)
-
-training_regulated_features %>%
-  filter(assay == "TRNSCRPT") %>%
-  filter(tissue %in% c("WAT-SC", "LIVER", "SKM-GN")) %>%
-  count(tissue, feature_ID) %>%
-  count(tissue)
-  
 
