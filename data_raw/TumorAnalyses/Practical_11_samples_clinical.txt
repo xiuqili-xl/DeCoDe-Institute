@@ -1,0 +1,21 @@
+UID	Patient ID	Type	AGE_AT_DIAGNOSIS	GENDER	GRADE_DIFFERENTIATION	STAGE	T	N	M	VITAL_STATUS_txt	SURVIVAL_WEEKS_SITE
+Sample1	P1	Tumor	52.77	1	2	IIIB	4	2	0	Deceased	39
+Sample2	P2	Tumor	58.42	1	3	IIA	2a	1	0	Deceased	118.86
+Sample3	P3	Tumor	60.99	1	3	IA	1b	0	0	Alive	306.86
+Sample4	P4	Tumor	63.2	1	3	IIB	2b	1	0	Deceased	86.29
+Sample5	P5	Tumor	68.76	1	1	IB	2a	0	0	Deceased	132.29
+Sample6	P6	Tumor	70.34	1	3	IIB	3	0	0	Deceased	378.57
+Sample7	P7	Tumor	71.07	1	3	IIB	2b	1	0	Deceased	110.86
+Sample8	P8	Tumor	74.8	1	3	IIIA	3	1	0	Deceased	47.29
+Sample9	P9	Tumor	78.71595	2	3	IA	1b	0	0	Deceased	79.71428571
+Sample10	P10	Tumor	71.50171	1	3	IA	1a	0	0	Deceased	119.1428571
+Sample11	P1	Normal	52.77	1	2	IIIB	4	2	0	Deceased	39
+Sample12	P2	Normal	58.42	1	3	IIA	2a	1	0	Deceased	118.86
+Sample13	P3	Normal	60.99	1	3	IA	1b	0	0	Alive	306.86
+Sample14	P4	Normal	63.2	1	3	IIB	2b	1	0	Deceased	86.29
+Sample15	P5	Normal	68.76	1	1	IB	2a	0	0	Deceased	132.29
+Sample16	P6	Normal	70.34	1	3	IIB	3	0	0	Deceased	378.57
+Sample17	P7	Normal	71.07	1	3	IIB	2b	1	0	Deceased	110.86
+Sample18	P8	Normal	74.8	1	3	IIIA	3	1	0	Deceased	47.29
+Sample19	P9	Normal	78.71595	2	3	IA	1b	0	0	Deceased	79.71428571
+Sample20	P10	Normal	71.50171	1	3	IA	1a	0	0	Deceased	119.1428571

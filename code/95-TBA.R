@@ -1,3 +1,0 @@
-# https://nci-iteb.github.io/tumor_epidemiology_approaches/sessions/session_11/practical
-# Note the tabs on top
-# Maining the pathways analysis...

@@ -166,7 +166,6 @@ ggsave(path = here("graphs", "MoTrPAC_DE"),
        filename = "wat_sc_heatmap_8wk_female.png",
        width = 6, height = 8, dpi = 300, unit = "in", bg = "white")
 
-# Samples from the same 
 
 # Hmmm.... it might be better to also have other animals
 # control: SRR25251198, (viallabel: 90265017005) / SRR25251202 (viallabel: 90252017005)
